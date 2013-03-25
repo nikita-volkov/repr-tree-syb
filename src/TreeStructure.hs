@@ -7,6 +7,8 @@ import Data.Generics
 import Data.String
 import Data.Text (Text)
 import qualified Data.Text as Text
+import Data.Map (Map)
+import qualified Data.Map as Map
 
 
 treeRepr :: (Data a, IsString b) => a -> b
@@ -32,8 +34,8 @@ tree = fix . tree'
       | name == "(,)" = Node "," $ fix <$> forest
       | otherwise = Node name $ fix <$> forest
 
-tree' :: Data a => a -> Tree String
-tree' = adtTree `extQ` textTree `extQ` stringTree
+tree' :: (Data a) => a -> Tree String
+tree' = adtTree `ext2Q` mapDataTree `extQ` textTree `extQ` stringTree
 
 textTree :: Text -> Tree String
 textTree x = Node (Text.unpack x) []
@@ -44,3 +46,6 @@ stringTree x = Node x []
 adtTree :: Data a => a -> Tree String
 adtTree a = Node (showConstr (toConstr a)) (gmapQ tree' a)
 
+mapDataTree :: (Data a, Data k) => Map k a -> Tree String
+mapDataTree = Node "Map" . map processItem . Map.toList where
+  processItem (k, v) = Node "->" [tree' k, tree' v]
