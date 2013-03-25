@@ -1,0 +1,29 @@
+name:               tree-structure
+version:            0.1.0
+cabal-version:      >=1.8
+build-type:         Simple
+license:            MIT
+license-file:       LICENSE
+copyright:          (c) 2013, Nikita Volkov
+author:             Nikita Volkov
+maintainer:         Nikita Volkov <nikita.y.volkov@mail.ru>
+stability:          experimental
+homepage:           https://github.com/nikita-volkov/tree-structure
+bug-reports:        https://github.com/nikita-volkov/tree-structure/issues
+synopsis:           
+description:        
+category:           
+
+library
+  hs-source-dirs:   src
+  extensions:       PatternGuards
+  exposed-modules:  TreeStructure
+  other-modules:    
+  build-depends:    base >= 4.5 && < 5,
+                    containers >= 0.5,
+                    text,
+                    syb == 0.3.*
+
+source-repository head
+  type:             git
+  location:         git://github.com/nikita-volkov/tree-structure.git
