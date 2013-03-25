@@ -1,5 +1,5 @@
 {-# LANGUAGE DeriveDataTypeable #-}
-module ReprTree (ReprTree, reprTreeString, reprTree) where
+module ReprTree (reprTree, reprTreeString) where
 
 import Data.Tree
 import Data.Generics
@@ -10,8 +10,50 @@ import qualified Data.Map as Map
 import Data.Set (Set)
 import qualified Data.Set as Set
 
-type ReprTree = Tree String
 
+-- | A data representation in form of a formatted multiline string, such as
+-- the following:
+-- 
+-- @
+-- :
+-- - A
+-- | - :
+-- | | - a
+-- | | - b
+-- | | - c
+-- | - 9
+-- - C
+-- | - 3
+-- - B
+-- - D
+-- | - :
+-- |   - :
+-- |   | - asdf
+-- |   | - 123
+-- |   | - ldskfjkl
+-- |   - :
+-- |     - f
+-- @
+-- 
+-- Which is a result of running the following code:
+-- 
+-- > import Data.Generics (Data, Typeable)
+-- >
+-- > data SomeType = 
+-- >   A [String] Int | 
+-- >   B | 
+-- >   C Int | 
+-- >   D [[String]]
+-- >   deriving (Typeable, Data)
+-- > 
+-- > xxx = A ["a", "b", "c"] 9 
+-- >     : C 3 
+-- >     : B 
+-- >     : D [["asdf", "123", "ldskfjkl"], ["f"]]
+-- >     : []
+-- > 
+-- > main = putStrLn $ reprTreeString xxx
+-- 
 reprTreeString :: (Data a) => a -> String
 reprTreeString = unlines . treeLines . reprTree where
   treeLines (Node x ts) = x : subTreesLines ts
@@ -20,7 +62,9 @@ reprTreeString = unlines . treeLines . reprTree where
   subTreesLines (t:ts) = shift "- " "| " (treeLines t) ++ subTreesLines ts
   shift first other = zipWith (++) (first : repeat other)
 
-reprTree :: Data a => a -> ReprTree
+-- | Get a representation tree of a generic data structure using SYB. Can be 
+-- used to implement a custom converter to textual representation.
+reprTree :: Data a => a -> Tree String
 reprTree = adtReprTree 
   `ext2Q` mapReprTree 
   `ext2Q` pairReprTree 
@@ -29,23 +73,23 @@ reprTree = adtReprTree
   `extQ` textReprTree 
   `extQ` stringReprTree
 
-textReprTree :: Text -> ReprTree
+textReprTree :: Text -> Tree String
 textReprTree x = Node (Text.unpack x) []
 
-stringReprTree :: String -> ReprTree
+stringReprTree :: String -> Tree String
 stringReprTree x = Node x []
 
-adtReprTree :: Data a => a -> ReprTree
+adtReprTree :: Data a => a -> Tree String
 adtReprTree a = Node (showConstr (toConstr a)) (gmapQ reprTree a)
 
-mapReprTree :: (Data a, Data k) => Map k a -> ReprTree
+mapReprTree :: (Data a, Data k) => Map k a -> Tree String
 mapReprTree = Node "Map" . map pairReprTree . Map.toList where
 
-pairReprTree :: (Data a, Data b) => (a, b) -> ReprTree
+pairReprTree :: (Data a, Data b) => (a, b) -> Tree String
 pairReprTree (a, b) = Node "," [reprTree a, reprTree b]
 
-listReprTree :: (Data a) => [a] -> ReprTree
+listReprTree :: (Data a) => [a] -> Tree String
 listReprTree = Node ":" . map reprTree
 
-setReprTree :: (Data a) => Set a -> ReprTree
+setReprTree :: (Data a) => Set a -> Tree String
 setReprTree = Node "Set" . map reprTree . Set.toList
