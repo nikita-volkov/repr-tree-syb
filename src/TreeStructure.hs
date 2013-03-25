@@ -1,7 +1,6 @@
 {-# LANGUAGE DeriveDataTypeable #-}
 module TreeStructure (treeRepr, tree) where
 
-import Control.Applicative
 import Data.Tree
 import Data.Generics
 import Data.String
@@ -9,6 +8,8 @@ import Data.Text (Text)
 import qualified Data.Text as Text
 import Data.Map (Map)
 import qualified Data.Map as Map
+import Data.Set (Set)
+import qualified Data.Set as Set
 
 
 treeRepr :: (Data a, IsString b) => a -> b
@@ -29,6 +30,7 @@ tree = adtTree
   `ext2Q` mapDataTree 
   `ext2Q` pairDataTree 
   `ext1Q` listDataTree 
+  `ext1Q` setDataTree 
   `extQ` textTree 
   `extQ` stringTree
 
@@ -49,3 +51,6 @@ pairDataTree (a, b) = Node "," [tree a, tree b]
 
 listDataTree :: (Data a) => [a] -> Tree String
 listDataTree = Node ":" . map tree
+
+setDataTree :: (Data a) => Set a -> Tree String
+setDataTree = Node "Set" . map tree . Set.toList
