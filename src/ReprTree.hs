@@ -28,13 +28,13 @@ import qualified Data.Set as Set
 -- | - 3
 -- - B
 -- - D
--- | - :
--- |   - :
--- |   | - asdf
--- |   | - 123
--- |   | - ldskfjkl
--- |   - :
--- |     - f
+--   - :
+--     - :
+--     | - asdf
+--     | - 123
+--     | - ldskfjkl
+--     - :
+--       - f
 -- @
 -- 
 -- Which is a result of running the following code:
