@@ -7,7 +7,13 @@ import Data.String
 import Data.Map
 import TreeStructure
 
-data SomeType = A [String] Int | B | C Int | D [[String]] | E (Map SomeType Int)
+data SomeType = 
+  A [String] Int | 
+  B | 
+  C Int | 
+  D [[String]] | 
+  E (Map SomeType Int) |
+  F (String, Int)
   deriving (Typeable, Data, Ord, Eq)
 
 xxx = A ["a", "b", "c"] 9 
@@ -15,6 +21,7 @@ xxx = A ["a", "b", "c"] 9
     : B 
     : D [["asdf", "123", "ldskfjkl"], ["f"]]
     : E (fromList [(B, 3), (C 2, 4)])
+    : F ("asdf", 23)
     : []
 
 main = do

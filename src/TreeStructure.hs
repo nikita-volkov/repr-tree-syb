@@ -25,17 +25,12 @@ treeRepr = fromString . unlines . draw . tree
         shift first other = zipWith (++) (first : repeat other)
 
 tree :: Data a => a -> Tree String
-tree = fix . tree' 
-  where
-    fix (Node name forest)
-      | name == "(:)" 
-      , a : b : [] <- forest
-        = Node ":" $ (fix a) : (subForest $ fix b)
-      | name == "(,)" = Node "," $ fix <$> forest
-      | otherwise = Node name $ fix <$> forest
-
-tree' :: (Data a) => a -> Tree String
-tree' = adtTree `ext2Q` mapDataTree `extQ` textTree `extQ` stringTree
+tree = adtTree 
+  `ext2Q` mapDataTree 
+  `ext2Q` pairDataTree 
+  `ext1Q` listDataTree 
+  `extQ` textTree 
+  `extQ` stringTree
 
 textTree :: Text -> Tree String
 textTree x = Node (Text.unpack x) []
@@ -44,8 +39,13 @@ stringTree :: String -> Tree String
 stringTree x = Node x []
 
 adtTree :: Data a => a -> Tree String
-adtTree a = Node (showConstr (toConstr a)) (gmapQ tree' a)
+adtTree a = Node (showConstr (toConstr a)) (gmapQ tree a)
 
 mapDataTree :: (Data a, Data k) => Map k a -> Tree String
-mapDataTree = Node "Map" . map processItem . Map.toList where
-  processItem (k, v) = Node "->" [tree' k, tree' v]
+mapDataTree = Node "Map" . map pairDataTree . Map.toList where
+
+pairDataTree :: (Data a, Data b) => (a, b) -> Tree String
+pairDataTree (a, b) = Node "," [tree a, tree b]
+
+listDataTree :: (Data a) => [a] -> Tree String
+listDataTree = Node ":" . map tree
