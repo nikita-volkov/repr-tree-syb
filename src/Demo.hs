@@ -29,3 +29,4 @@ xxx = A ["a", "b", "c"] 9
 
 main = do
   putStrLn $ reprTreeString xxx
+  putStrLn $ reprTreeString ('a', 'b', 'c')

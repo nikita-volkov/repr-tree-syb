@@ -3,6 +3,8 @@ module ReprTree (reprTree, reprTreeString) where
 
 import Data.Tree
 import Data.Generics
+import Data.List
+import Data.Maybe
 import Data.Text (Text)
 import qualified Data.Text as Text
 import Data.Map (Map)
@@ -80,7 +82,12 @@ stringReprTree :: String -> Tree String
 stringReprTree x = Node x []
 
 adtReprTree :: Data a => a -> Tree String
-adtReprTree a = Node (showConstr (toConstr a)) (gmapQ reprTree a)
+adtReprTree a = Node (stripBraces $ showConstr $ toConstr a) (gmapQ reprTree a) 
+  where
+    stripBraces :: String -> String
+    stripBraces s = 
+      fromMaybe s $ 
+        stripPrefix "(" s >>= fmap reverse . stripPrefix ")" . reverse
 
 mapReprTree :: (Data a, Data k) => Map k a -> Tree String
 mapReprTree = Node "Map" . map pairReprTree . Map.toList where
