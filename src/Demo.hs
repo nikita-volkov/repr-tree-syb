@@ -6,7 +6,7 @@ import Data.Generics
 import Data.String
 import Data.Map as Map
 import Data.Set as Set
-import TreeStructure
+import ReprTree
 
 data SomeType = 
   A [String] Int | 
@@ -28,4 +28,4 @@ xxx = A ["a", "b", "c"] 9
     : []
 
 main = do
-  putStrLn $ treeRepr xxx
+  putStrLn $ reprTreeString xxx

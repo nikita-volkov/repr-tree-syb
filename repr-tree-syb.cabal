@@ -1,4 +1,4 @@
-name:               tree-structure
+name:               repr-tree-syb
 version:            0.1.0
 cabal-version:      >=1.8
 build-type:         Simple
@@ -8,8 +8,8 @@ copyright:          (c) 2013, Nikita Volkov
 author:             Nikita Volkov
 maintainer:         Nikita Volkov <nikita.y.volkov@mail.ru>
 stability:          experimental
-homepage:           https://github.com/nikita-volkov/tree-structure
-bug-reports:        https://github.com/nikita-volkov/tree-structure/issues
+homepage:           https://github.com/nikita-volkov/repr-tree-syb
+bug-reports:        https://github.com/nikita-volkov/repr-tree-syb/issues
 synopsis:           
 description:        
 category:           
@@ -17,7 +17,7 @@ category:
 library
   hs-source-dirs:   src
   extensions:       PatternGuards
-  exposed-modules:  TreeStructure
+  exposed-modules:  ReprTree
   other-modules:    
   build-depends:    base >= 4.5 && < 5,
                     containers >= 0.5,
@@ -26,4 +26,4 @@ library
 
 source-repository head
   type:             git
-  location:         git://github.com/nikita-volkov/tree-structure.git
+  location:         git://github.com/nikita-volkov/repr-tree-syb.git
