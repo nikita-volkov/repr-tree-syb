@@ -13,17 +13,12 @@ import qualified Data.Set as Set
 type ReprTree = Tree String
 
 reprTreeString :: (Data a) => a -> String
-reprTreeString = unlines . draw . reprTree
-  where
-    draw :: ReprTree -> [String]
-    draw (Node x ts0) = x : drawSubTrees ts0
-      where
-        drawSubTrees [] = []
-        drawSubTrees [t] =
-            shift "- " "  " (draw t)
-        drawSubTrees (t:ts) =
-            shift "- " "| " (draw t) ++ drawSubTrees ts
-        shift first other = zipWith (++) (first : repeat other)
+reprTreeString = unlines . treeLines . reprTree where
+  treeLines (Node x ts) = x : subTreesLines ts
+  subTreesLines [] = []
+  subTreesLines [t] = shift "- " "  " (treeLines t)
+  subTreesLines (t:ts) = shift "- " "| " (treeLines t) ++ subTreesLines ts
+  shift first other = zipWith (++) (first : repeat other)
 
 reprTree :: Data a => a -> ReprTree
 reprTree = adtReprTree 
