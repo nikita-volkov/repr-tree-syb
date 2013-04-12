@@ -90,7 +90,7 @@ adtReprTree a = Node (stripBraces $ showConstr $ toConstr a) (gmapQ reprTree a)
         stripPrefix "(" s >>= fmap reverse . stripPrefix ")" . reverse
 
 mapReprTree :: (Data a, Data k) => Map k a -> Tree String
-mapReprTree = Node "Map" . map pairReprTree . Map.toList where
+mapReprTree = Node "Map" . map pairReprTree . Map.toList
 
 pairReprTree :: (Data a, Data b) => (a, b) -> Tree String
 pairReprTree (a, b) = Node "," [reprTree a, reprTree b]
