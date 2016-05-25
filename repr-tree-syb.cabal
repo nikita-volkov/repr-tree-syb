@@ -22,7 +22,7 @@ library
   build-depends:    base >= 4.5 && < 5,
                     containers >= 0.5,
                     text,
-                    syb == 0.3.*
+                    syb >= 0.3 && < 0.7
 
 source-repository head
   type:             git
